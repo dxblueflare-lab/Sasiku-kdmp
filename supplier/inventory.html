@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Stok - Dapur Suplai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        merah: '#DC2626',
+                        putih: '#FFFFFF',
+                        emas: '#F59E0B',
+                        gelap: '#1F2937',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-hero {
+            background: linear-gradient(135deg, #DC2626 0%, #991B1B 50%, #7F1D1D 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(220, 38, 38, 0.15);
+        }
+        .status-pill {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+            z-index: 10;
+        }
+        .main-content {
+            margin-left: 250px;
+        }
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+        .mobile-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background: white;
+            z-index: 50;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-sidebar.active {
+            transform: translateX(0);
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 40;
+        }
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Mobile Overlay -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Mobile Sidebar -->
+    <div class="mobile-sidebar glass-effect" id="mobileSidebar">
+        <div class="p-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+                     <img src="https://www.appdapursuplai.org/images/logo.png" alt="Logo" width="70" height="70">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-merah tracking-tight">DAPUR SUPLAI</h1>
+                    <p class="text-xs text-gray-600 font-medium">Supplier Panel</p>
+                </div>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-box"></i>
+                    <span>Produk Saya</span>
+                </a>
+                <a href="orders.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pesanan</span>
+                </a>
+                <a href="inventory.html" class="flex items-center space-x-3 px-4 py-3 bg-merah text-white rounded-lg">
+                    <i class="fas fa-warehouse"></i>
+                    <span>Stok</span>
+                </a>
+                <a href="../auth/logout.php" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Desktop Sidebar -->
+    <div class="sidebar glass-effect" id="desktopSidebar">
+        <div class="p-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+                     <img src="https://www.appdapursuplai.org/images/logo.png" alt="Logo" width="70" height="70">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-merah tracking-tight">DAPUR SUPLAI</h1>
+                    <p class="text-xs text-gray-600 font-medium">Supplier Panel</p>
+                </div>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-box"></i>
+                    <span>Produk Saya</span>
+                </a>
+                <a href="orders.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pesanan</span>
+                </a>
+                <a href="inventory.html" class="flex items-center space-x-3 px-4 py-3 bg-merah text-white rounded-lg">
+                    <i class="fas fa-warehouse"></i>
+                    <span>Stok</span>
+                </a>
+                <a href="../auth/logout.php" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="glass-effect shadow-lg p-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <button id="menuToggle" class="md:hidden mr-4 text-merah text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Manajemen Stok</h1>
+                    <p class="text-gray-600">Kelola stok produk Anda</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <i class="fas fa-bell text-gray-600 text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-emas text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-merah rounded-full flex items-center justify-center text-white font-bold">SP</div>
+                    <span class="font-semibold">Supplier</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Inventory Content -->
+        <main class="p-6">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800">Daftar Stok Produk</h2>
+                <button class="bg-merah text-white px-6 py-3 rounded-full font-bold hover:bg-red-700 transition shadow-lg flex items-center space-x-2">
+                    <i class="fas fa-plus"></i>
+                    <span>Tambah Stok</span>
+                </button>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="search">Cari Produk</label>
+                        <input type="text" id="search" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah" placeholder="Nama produk...">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="category">Kategori</label>
+                        <select id="category" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah">
+                            <option value="">Semua Kategori</option>
+                            <option value="sayur">Sayur-Sayuran</option>
+                            <option value="buah">Buah-Buahan</option>
+                            <option value="sembako">Sembako</option>
+                            <option value="protein">Protein Hewani</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="status">Status Stok</label>
+                        <select id="status" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah">
+                            <option value="">Semua Status</option>
+                            <option value="tersedia">Tersedia</option>
+                            <option value="habis">Habis</option>
+                            <option value="rendah">Stok Rendah</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button class="w-full bg-merah text-white px-4 py-2 rounded-lg font-bold hover:bg-red-700 transition">
+                            <i class="fas fa-search mr-2"></i>Cari
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Table -->
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gambar</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Produk</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stok Saat Ini</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stok Minimum</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#001</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                                        <img src="https://images.unsplash.com/photo-1569718210204-2d644f66c0c2?w=100&h=100&fit=crop" alt="Beras" class="w-full h-full object-cover">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Beras Premium</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Sembako</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Rp 15.000/kg</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">120</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Tersedia</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <button class="text-blue-500 hover:text-blue-700 mr-3">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-yellow-500 hover:text-yellow-700">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#002</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                                        <img src="https://images.unsplash.com/photo-1545167622-3a6ac756afa4?w=100&h=100&fit=crop" alt="Sayur" class="w-full h-full object-cover">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Sayur Mayur Segar</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Sayur-Sayuran</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Rp 25.000/paket</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">85</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Tersedia</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <button class="text-blue-500 hover:text-blue-700 mr-3">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-yellow-500 hover:text-yellow-700">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#003</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                                        <img src="https://images.unsplash.com/photo-1605993439219-9d0a34a9c3ab?w=100&h=100&fit=crop" alt="Telur" class="w-full h-full object-cover">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Telur Ayam Segar</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Protein Hewani</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Rp 2.500/pcs</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">200</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">20</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Tersedia</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <button class="text-blue-500 hover:text-blue-700 mr-3">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-yellow-500 hover:text-yellow-700">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#004</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                                        <img src="https://images.unsplash.com/photo-1594594870951-a2173d98b0c1?w=100&h=100&fit=crop" alt="Minyak" class="w-full h-full object-cover">
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Minyak Goreng</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Sembako</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Rp 18.000/botol</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">3</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Stok Rendah</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <button class="text-blue-500 hover:text-blue-700 mr-3">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-yellow-500 hover:text-yellow-700">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="bg-white px-6 py-4 border-t border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm text-gray-700">
+                            Menampilkan <span class="font-medium">1</span> sampai <span class="font-medium">4</span> dari <span class="font-medium">12</span> hasil
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 text-sm bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">
+                                Sebelumnya
+                            </button>
+                            <button class="px-4 py-2 text-sm bg-merah text-white rounded-lg hover:bg-red-700">
+                                1
+                            </button>
+                            <button class="px-4 py-2 text-sm bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">
+                                2
+                            </button>
+                            <button class="px-4 py-2 text-sm bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">
+                                3
+                            </button>
+                            <button class="px-4 py-2 text-sm bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">
+                                Berikutnya
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle mobile sidebar
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('overlay');
+
+            mobileSidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        // Close sidebar when clicking on overlay
+        document.getElementById('overlay').addEventListener('click', function() {
+            document.getElementById('mobileSidebar').classList.remove('active');
+            this.classList.remove('active');
+        });
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Konfirmasi logout
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                // Redirect ke halaman logout PHP
+                window.location.href = '../auth/logout.php';
+            }
+        });
+
+        // Fungsi untuk navigasi ke halaman lain
+        document.querySelectorAll('a[href]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if(this.getAttribute('href').startsWith('http') || this.getAttribute('href').includes('mailto:')) {
+                    return; // Biarkan tautan eksternal berfungsi normal
+                }
+
+                e.preventDefault();
+
+                // Simulasikan navigasi
+                const targetPage = this.getAttribute('href');
+                window.location.href = targetPage;
+            });
+        });
+    </script>
+</body>
+</html>

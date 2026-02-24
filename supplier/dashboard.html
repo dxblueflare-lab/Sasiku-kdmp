@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Supplier - Dapur Suplai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        merah: '#DC2626',
+                        putih: '#FFFFFF',
+                        emas: '#F59E0B',
+                        gelap: '#1F2937',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-hero {
+            background: linear-gradient(135deg, #DC2626 0%, #991B1B 50%, #7F1D1D 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(220, 38, 38, 0.15);
+        }
+        .status-pill {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+            z-index: 10;
+        }
+        .main-content {
+            margin-left: 250px;
+        }
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+        .mobile-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background: white;
+            z-index: 50;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-sidebar.active {
+            transform: translateX(0);
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 40;
+        }
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Mobile Overlay -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Mobile Sidebar -->
+    <div class="mobile-sidebar glass-effect" id="mobileSidebar">
+        <div class="p-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+                     <img src="https://www.appdapursuplai.org/images/logo.png" alt="Logo" width="70" height="70">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-merah tracking-tight">DAPUR SUPLAI</h1>
+                    <p class="text-xs text-gray-600 font-medium">Supplier Panel</p>
+                </div>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 bg-merah text-white rounded-lg">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-box"></i>
+                    <span>Produk Saya</span>
+                </a>
+                <a href="orders.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pesanan</span>
+                </a>
+                <a href="inventory.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-warehouse"></i>
+                    <span>Stok</span>
+                </a>
+                <a href="../auth/logout.php" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Desktop Sidebar -->
+    <div class="sidebar glass-effect" id="desktopSidebar">
+        <div class="p-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+                     <img src="https://www.appdapursuplai.org/images/logo.png" alt="Logo" width="70" height="70">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-merah tracking-tight">DAPUR SUPLAI</h1>
+                    <p class="text-xs text-gray-600 font-medium">Supplier Panel</p>
+                </div>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 bg-merah text-white rounded-lg">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-box"></i>
+                    <span>Produk Saya</span>
+                </a>
+                <a href="orders.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pesanan</span>
+                </a>
+                <a href="inventory.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-warehouse"></i>
+                    <span>Stok</span>
+                </a>
+                <a href="../auth/logout.php" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="glass-effect shadow-lg p-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <button id="menuToggle" class="md:hidden mr-4 text-merah text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Dashboard Supplier</h1>
+                    <p class="text-gray-600">Kelola produk dan pesanan Anda</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <i class="fas fa-bell text-gray-600 text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-emas text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-merah rounded-full flex items-center justify-center text-white font-bold">SP</div>
+                    <span class="font-semibold">Supplier</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main class="p-6">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold text-gray-800 mb-4">Dashboard Supplier</h1>
+                <p class="text-gray-600">Kelola produk dan pesanan Anda</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-green-100 text-green-600">
+                            <i class="fas fa-box text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-gray-500">Jumlah Produk</p>
+                            <p class="text-2xl font-bold text-gray-800" id="productCount">42</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                            <i class="fas fa-shopping-cart text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-gray-500">Pesanan Terkait</p>
+                            <p class="text-2xl font-bold text-gray-800" id="orderCount">128</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                            <i class="fas fa-chart-line text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-gray-500">Penjualan Bulan Ini</p>
+                            <p class="text-2xl font-bold text-gray-800" id="salesAmount">Rp 42.500.000</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts and Tables -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+                <!-- Product Chart -->
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Statistik Produk</h2>
+                    <div class="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <p class="text-gray-500">Grafik statistik produk akan ditampilkan di sini</p>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Pesanan Terbaru</h2>
+                    <div class="space-y-4" id="recentOrders">
+                        <div class="flex items-center justify-between border-b pb-3">
+                            <div>
+                                <p class="font-semibold">#ORD-001</p>
+                                <p class="text-gray-600 text-sm">John Doe</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-bold">Rp 245.000</p>
+                                <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Selesai</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between border-b pb-3">
+                            <div>
+                                <p class="font-semibold">#ORD-002</p>
+                                <p class="text-gray-600 text-sm">Jane Smith</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-bold">Rp 180.000</p>
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Diproses</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between border-b pb-3">
+                            <div>
+                                <p class="font-semibold">#ORD-003</p>
+                                <p class="text-gray-600 text-sm">Robert Johnson</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-bold">Rp 320.000</p>
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Dikonfirmasi</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between border-b pb-3">
+                            <div>
+                                <p class="font-semibold">#ORD-004</p>
+                                <p class="text-gray-600 text-sm">Emily Davis</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-bold">Rp 150.000</p>
+                                <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">Dikirim</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-semibold">#ORD-005</p>
+                                <p class="text-gray-600 text-sm">Michael Wilson</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-bold">Rp 275.000</p>
+                                <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Pending</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                <a href="products.html" class="bg-white rounded-2xl shadow-lg p-6 card-hover flex items-center">
+                    <div class="p-3 rounded-full bg-indigo-100 text-indigo-600">
+                        <i class="fas fa-box-open text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="font-bold text-lg text-gray-800">Kelola Produk Saya</h3>
+                        <p class="text-gray-600">Tambah, edit, atau hapus produk Anda</p>
+                    </div>
+                </a>
+
+                <a href="orders.html" class="bg-white rounded-2xl shadow-lg p-6 card-hover flex items-center">
+                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                        <i class="fas fa-receipt text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="font-bold text-lg text-gray-800">Lihat Pesanan</h3>
+                        <p class="text-gray-600">Lihat pesanan yang terkait dengan produk Anda</p>
+                    </div>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle mobile sidebar
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('overlay');
+
+            mobileSidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        // Close sidebar when clicking on overlay
+        document.getElementById('overlay').addEventListener('click', function() {
+            document.getElementById('mobileSidebar').classList.remove('active');
+            this.classList.remove('active');
+        });
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Konfirmasi logout
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                // Redirect ke halaman logout PHP
+                window.location.href = '../auth/logout.php';
+            }
+        });
+
+        // Cek apakah pengguna sudah login dan memiliki role supplier
+        document.addEventListener('DOMContentLoaded', function() {
+            // Dalam implementasi nyata, kita akan memeriksa session di sini
+            // Untuk simulasi, kita anggap pengguna sudah login sebagai supplier
+            const isSupplier = true; // Ini akan diisi dari session di implementasi nyata
+
+            if (!isSupplier) {
+                // Jika bukan supplier, redirect ke halaman login
+                window.location.href = '../auth/login.html';
+            }
+        });
+
+        // Simulasi data dinamis
+        setTimeout(function() {
+            document.getElementById('productCount').textContent = '45';
+            document.getElementById('orderCount').textContent = '132';
+            document.getElementById('salesAmount').textContent = 'Rp 45.200.000';
+        }, 1000);
+
+        // Simulasi penambahan pesanan baru
+        setTimeout(function() {
+            const newOrder = `
+                <div class="flex items-center justify-between border-b pb-3">
+                    <div>
+                        <p class="font-semibold">#ORD-006</p>
+                        <p class="text-gray-600 text-sm">Sarah Johnson</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold">Rp 195.000</p>
+                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Baru</span>
+                    </div>
+                </div>
+            `;
+            document.getElementById('recentOrders').insertAdjacentHTML('afterbegin', newOrder);
+        }, 2000);
+    </script>
+</body>
+</html>

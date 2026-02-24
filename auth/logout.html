@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout - Dapur Suplai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        merah: '#DC2626',
+                        putih: '#FFFFFF',
+                        emas: '#F59E0B',
+                        gelap: '#1F2937',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #DC2626 0%, #991B1B 50%, #7F1D1D 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logout-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto px-4 py-12 max-w-md">
+        <div class="logout-card p-8 text-center">
+            <div class="w-20 h-20 bg-gradient-to-br from-merah to-red-800 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <i class="fas fa-sign-out-alt text-4xl text-white"></i>
+            </div>
+            
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">Keluar dari Akun</h1>
+            <p class="text-gray-600 mb-8">Apakah Anda yakin ingin keluar dari sistem?</p>
+            
+            <div class="space-y-4">
+                <button onclick="confirmLogout()" class="w-full bg-merah text-white py-3 rounded-xl font-bold hover:bg-red-700 transition shadow-lg flex items-center justify-center space-x-2">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Ya, Keluar</span>
+                </button>
+                
+                <a href="javascript:history.back()" class="w-full bg-gray-200 text-gray-800 py-3 rounded-xl font-bold hover:bg-gray-300 transition block">
+                    <i class="fas fa-arrow-left mr-2"></i>Batal
+                </a>
+            </div>
+        </div>
+        
+        <div class="text-center mt-6">
+            <a href="../index.html" class="text-white hover:text-emas flex items-center justify-center">
+                <i class="fas fa-home mr-2"></i> Kembali ke Beranda
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function confirmLogout() {
+            // Hapus semua data sesi pengguna
+            sessionStorage.removeItem('currentUser');
+            sessionStorage.removeItem('cart');
+            sessionStorage.removeItem('wishlist');
+            
+            // Hapus semua item sessionStorage yang terkait dengan pengguna
+            for(let i = sessionStorage.length - 1; i >= 0; i--) {
+                const key = sessionStorage.key(i);
+                if(key.startsWith('user_') || key.startsWith('cart_') || key.startsWith('order_')) {
+                    sessionStorage.removeItem(key);
+                }
+            }
+            
+            // Hapus cookie jika ada
+            document.cookie.split(";").forEach(function(c) { 
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+            });
+            
+            // Tampilkan pesan konfirmasi
+            alert('Anda telah berhasil keluar dari sistem.');
+            
+            // Redirect ke halaman login
+            window.location.href = 'login.html';
+        }
+        
+        // Cek apakah pengguna sedang login
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = sessionStorage.getItem('currentUser');
+            if (!currentUser) {
+                // Jika tidak ada pengguna yang login, redirect ke halaman login
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>

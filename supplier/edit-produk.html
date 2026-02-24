@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Produk - Dapur Suplai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        merah: '#DC2626',
+                        putih: '#FFFFFF',
+                        emas: '#F59E0B',
+                        gelap: '#1F2937',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+            z-index: 10;
+        }
+        .main-content {
+            margin-left: 250px;
+        }
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+        .mobile-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background: white;
+            z-index: 50;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-sidebar.active {
+            transform: translateX(0);
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 40;
+        }
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Mobile Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Mobile Sidebar -->
+    <div class="mobile-sidebar glass-effect" id="mobileSidebar">
+        <div class="p-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-16 h-16 bg-gradient-to-br from-merah to-red-800 rounded-full flex items-center justify-center">
+                     <img src="https://www.appdapursuplai.org/images/logo.png" alt="Logo" width="70" height="70">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-merah tracking-tight">DAPUR SUPLAI</h1>
+                    <p class="text-xs text-gray-600 font-medium">Supplier Panel</p>
+                </div>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-box"></i>
+                    <span>Produk Saya</span>
+                </a>
+                <a href="orders.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pesanan</span>
+                </a>
+                <a href="inventory.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-warehouse"></i>
+                    <span>Stok</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Desktop Sidebar -->
+    <div class="sidebar glass-effect" id="desktopSidebar">
+        <div class="p-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-16 h-16 bg-gradient-to-br from-merah to-red-800 rounded-full flex items-center justify-center">
+                     <img src="https://www.appdapursuplai.org/images/logo.png" alt="Logo" width="70" height="70">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-merah tracking-tight">DAPUR SUPLAI</h1>
+                    <p class="text-xs text-gray-600 font-medium">Supplier Panel</p>
+                </div>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-box"></i>
+                    <span>Produk Saya</span>
+                </a>
+                <a href="orders.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pesanan</span>
+                </a>
+                <a href="inventory.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-warehouse"></i>
+                    <span>Stok</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="glass-effect shadow-lg p-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <button id="menuToggle" class="md:hidden mr-4 text-merah text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Edit Produk</h1>
+                    <p class="text-gray-600">Ubah informasi produk</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <i class="fas fa-bell text-gray-600 text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-emas text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-merah rounded-full flex items-center justify-center text-white font-bold">SP</div>
+                    <span class="font-semibold">Supplier</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Edit Product Content -->
+        <main class="p-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Form Edit Produk</h2>
+                    
+                    <form id="editProductForm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="productName">
+                                    Nama Produk *
+                                </label>
+                                <input type="text" id="productName" name="productName" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah focus:border-transparent" placeholder="Contoh: Beras Premium" value="Beras Premium" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="productCategory">
+                                    Kategori *
+                                </label>
+                                <select id="productCategory" name="productCategory" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah focus:border-transparent" required>
+                                    <option value="sembako" selected>Sembako</option>
+                                    <option value="sayur">Sayur-Sayuran</option>
+                                    <option value="buah">Buah-Buahan</option>
+                                    <option value="protein">Protein Hewani</option>
+                                    <option value="lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="productPrice">
+                                    Harga (Rp) *
+                                </label>
+                                <input type="number" id="productPrice" name="productPrice" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah focus:border-transparent" placeholder="Contoh: 15000" value="15000" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="productUnit">
+                                    Satuan *
+                                </label>
+                                <select id="productUnit" name="productUnit" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah focus:border-transparent" required>
+                                    <option value="kg" selected>Kilogram (kg)</option>
+                                    <option value="pcs">Pieces (pcs)</option>
+                                    <option value="paket">Paket</option>
+                                    <option value="liter">Liter (L)</option>
+                                    <option value="botol">Botol</option>
+                                    <option value="bungkus">Bungkus</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="productStock">
+                                    Stok Tersedia *
+                                </label>
+                                <input type="number" id="productStock" name="productStock" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah focus:border-transparent" placeholder="Contoh: 100" value="120" min="0" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="productStatus">
+                                    Status *
+                                </label>
+                                <select id="productStatus" name="productStatus" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah focus:border-transparent" required>
+                                    <option value="aktif" selected>Aktif</option>
+                                    <option value="tidak_aktif">Tidak Aktif</option>
+                                </select>
+                            </div>
+                            
+                            <div class="md:col-span-2">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="productDescription">
+                                    Deskripsi Produk
+                                </label>
+                                <textarea id="productDescription" name="productDescription" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah focus:border-transparent" placeholder="Deskripsikan produk secara singkat...">Beras pulen berkualitas tinggi dari petani lokal</textarea>
+                            </div>
+                            
+                            <div class="md:col-span-2">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="productImage">
+                                    Gambar Produk
+                                </label>
+                                <div class="flex items-center justify-center w-full">
+                                    <label for="productImage" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <img src="https://images.unsplash.com/photo-1569718210204-2d644f66c0c2?w=100&h=100&fit=crop" alt="Current Image" class="w-16 h-16 mb-4 object-cover rounded">
+                                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                            <p class="text-sm text-gray-500">
+                                                <span class="font-semibold">Klik untuk upload</span> atau drag and drop
+                                            </p>
+                                            <p class="text-xs text-gray-500 mt-2">SVG, PNG, JPG or GIF (MAX. 2MB)</p>
+                                        </div>
+                                        <input id="productImage" type="file" class="hidden" accept="image/*" />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-4 mt-8">
+                            <a href="products.html" class="px-6 py-3 bg-gray-300 text-gray-800 rounded-full font-bold hover:bg-gray-400 transition">
+                                Batal
+                            </a>
+                            <button type="submit" class="px-6 py-3 bg-merah text-white rounded-full font-bold hover:bg-red-700 transition shadow-lg">
+                                Simpan Perubahan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle mobile sidebar
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('overlay');
+
+            mobileSidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        // Close sidebar when clicking on overlay
+        document.getElementById('overlay').addEventListener('click', function() {
+            document.getElementById('mobileSidebar').classList.remove('active');
+            this.classList.remove('active');
+        });
+
+        // Fungsi untuk navigasi ke halaman lain
+        document.querySelectorAll('a[href]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if(this.getAttribute('href').startsWith('http') || this.getAttribute('href').includes('mailto:')) {
+                    return; // Biarkan tautan eksternal berfungsi normal
+                }
+
+                e.preventDefault();
+
+                // Simulasikan navigasi
+                const targetPage = this.getAttribute('href');
+                window.location.href = targetPage;
+            });
+        });
+
+        // Fungsi logout
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Konfirmasi logout
+            const confirmation = confirm('Apakah Anda yakin ingin logout?');
+            
+            if (confirmation) {
+                // Hapus data pengguna dari sessionStorage
+                sessionStorage.removeItem('currentUser');
+                
+                // Redirect ke halaman login
+                window.location.href = '../auth/login.html';
+            }
+        });
+
+        // Fungsi untuk mendapatkan produk dari localStorage
+        function getProductsFromStorage() {
+            const productsJSON = localStorage.getItem('products');
+            return productsJSON ? JSON.parse(productsJSON) : [];
+        }
+
+        // Fungsi untuk menyimpan produk ke localStorage
+        function saveProductsToStorage(products) {
+            localStorage.setItem('products', JSON.stringify(products));
+        }
+
+        // Fungsi untuk mendapatkan produk berdasarkan ID
+        function getProductById(productId) {
+            const products = getProductsFromStorage();
+            return products.find(p => p.id === productId);
+        }
+
+        // Fungsi untuk mengupdate produk di storage
+        function updateProductInStorage(productId, updatedProduct) {
+            const products = getProductsFromStorage();
+            const index = products.findIndex(p => p.id === productId);
+            if (index !== -1) {
+                products[index] = {...products[index], ...updatedProduct};
+                saveProductsToStorage(products);
+            }
+        }
+
+        // Fungsi untuk menangani form submit
+        document.getElementById('editProductForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Ambil ID produk dari URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (!productId) {
+                alert('ID produk tidak ditemukan!');
+                return;
+            }
+
+            // Ambil nilai dari form
+            const productName = document.getElementById('productName').value;
+            const productCategory = document.getElementById('productCategory').value;
+            const productPrice = document.getElementById('productPrice').value;
+            const productUnit = document.getElementById('productUnit').value;
+            const productStock = document.getElementById('productStock').value;
+            const productStatus = document.getElementById('productStatus').value;
+            const productDescription = document.getElementById('productDescription').value;
+
+            // Validasi sederhana
+            if(!productName || !productCategory || !productPrice || !productUnit || !productStock || !productStatus) {
+                alert('Harap lengkapi semua field yang wajib diisi!');
+                return;
+            }
+
+            // Buat objek produk yang diperbarui
+            const updatedProduct = {
+                name: productName,
+                category: productCategory,
+                price: `Rp ${parseInt(productPrice).toLocaleString()}/${productUnit}`,
+                stock: parseInt(productStock),
+                status: productStatus,
+                description: productDescription
+            };
+
+            // Update produk di storage
+            updateProductInStorage(productId, updatedProduct);
+
+            // Dalam implementasi nyata, ini akan dikirim ke server
+            // Untuk simulasi, kita tampilkan pesan sukses
+            alert(`Produk "${productName}" berhasil diperbarui!`);
+
+            // Redirect ke halaman daftar produk
+            setTimeout(function() {
+                window.location.href = 'products.html';
+            }, 1000);
+        });
+
+        // Fungsi untuk memuat data produk saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ambil ID produk dari URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (productId) {
+                // Ambil produk dari storage
+                const product = getProductById(productId);
+
+                if (product) {
+                    // Isi form dengan data produk
+                    document.getElementById('productName').value = product.name;
+                    document.getElementById('productCategory').value = product.category.toLowerCase();
+                    document.getElementById('productPrice').value = product.price.replace(/[Rp.]/g, '').split('/')[0].trim().replace(/,/g, '');
+                    document.getElementById('productUnit').value = product.price.split('/')[1] || 'kg';
+                    document.getElementById('productStock').value = product.stock;
+                    document.getElementById('productStatus').value = product.status;
+                    document.getElementById('productDescription').value = product.description || '';
+                } else {
+                    alert('Produk tidak ditemukan!');
+                    window.location.href = 'products.html';
+                }
+            } else {
+                alert('ID produk tidak ditemukan!');
+                window.location.href = 'products.html';
+            }
+        });
+
+        // Cek apakah pengguna sudah login dan memiliki role supplier
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = sessionStorage.getItem('currentUser');
+            
+            if (!currentUser) {
+                // Jika tidak ada pengguna yang login, redirect ke halaman login
+                alert('Anda harus login terlebih dahulu!');
+                window.location.href = '../auth/login.html';
+                return;
+            }
+
+            let user;
+            try {
+                user = JSON.parse(currentUser);
+            } catch (e) {
+                console.error('Error parsing user data:', e);
+                sessionStorage.removeItem('currentUser');
+                window.location.href = '../auth/login.html';
+                return;
+            }
+
+            // Cek apakah role pengguna adalah supplier
+            if (user.role !== 'supplier') {
+                // Jika bukan supplier, redirect ke dashboard sesuai role
+                alert('Anda tidak memiliki izin untuk mengakses halaman ini!');
+                switch(user.role) {
+                    case 'admin':
+                        window.location.href = '../admin/dashboard.html';
+                        break;
+                    case 'customer':
+                        window.location.href = '../customer/dashboard.html';
+                        break;
+                    default:
+                        window.location.href = '../auth/login.html';
+                        break;
+                }
+                return;
+            }
+
+            // Tampilkan informasi pengguna di header
+            const userNameElement = document.querySelector('.font-semibold');
+            if(userNameElement) {
+                userNameElement.textContent = user.nama_lengkap || user.username || user.email || 'Supplier';
+            }
+        });
+    </script>
+</body>
+</html>

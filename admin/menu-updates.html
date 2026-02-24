@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Menu - Dapur Suplai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        merah: '#DC2626',
+                        putih: '#FFFFFF',
+                        emas: '#F59E0B',
+                        gelap: '#1F2937',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-hero {
+            background: linear-gradient(135deg, #DC2626 0%, #991B1B 50%, #7F1D1D 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(220, 38, 38, 0.15);
+        }
+        .status-pill {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+            z-index: 10;
+        }
+        .main-content {
+            margin-left: 250px;
+        }
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+        .mobile-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background: white;
+            z-index: 50;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-sidebar.active {
+            transform: translateX(0);
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 40;
+        }
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Mobile Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Mobile Sidebar -->
+    <div class="mobile-sidebar glass-effect" id="mobileSidebar">
+        <div class="p-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-12 h-12 bg-gradient-to-br from-merah to-red-800 rounded-full flex items-center justify-center shadow-lg">
+                     <img src="https://www.appdapursuplai.org/images/logo.png" alt="Logo" width="50" height="50">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-merah tracking-tight">DAPUR SUPLAI</h1>
+                    <p class="text-xs text-gray-600 font-medium">Admin Panel</p>
+                </div>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-box"></i>
+                    <span>Produk</span>
+                </a>
+                <a href="orders.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pesanan</span>
+                </a>
+                <a href="users.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-users"></i>
+                    <span>Pengguna</span>
+                </a>
+                <a href="menu-updates.html" class="flex items-center space-x-3 px-4 py-3 bg-merah text-white rounded-lg">
+                    <i class="fas fa-utensils"></i>
+                    <span>Update Menu</span>
+                </a>
+                <a href="reports.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Laporan</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg" id="logoutBtnMobile">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Desktop Sidebar -->
+    <div class="sidebar glass-effect" id="desktopSidebar">
+        <div class="p-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-12 h-12 bg-gradient-to-br from-merah to-red-800 rounded-full flex items-center justify-center shadow-lg">
+                     <img src="https://www.appdapursuplai.org/images/logo.png" alt="Logo" width="50" height="50">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-merah tracking-tight">DAPUR SUPLAI</h1>
+                    <p class="text-xs text-gray-600 font-medium">Admin Panel</p>
+                </div>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-box"></i>
+                    <span>Produk</span>
+                </a>
+                <a href="orders.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pesanan</span>
+                </a>
+                <a href="users.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-users"></i>
+                    <span>Pengguna</span>
+                </a>
+                <a href="menu-updates.html" class="flex items-center space-x-3 px-4 py-3 bg-merah text-white rounded-lg">
+                    <i class="fas fa-utensils"></i>
+                    <span>Update Menu</span>
+                </a>
+                <a href="reports.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Laporan</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="glass-effect shadow-lg p-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <button id="menuToggle" class="md:hidden mr-4 text-merah text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Update Menu Dapur</h1>
+                    <p class="text-gray-600">Kelola update menu dari Dapur Suplai</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <i class="fas fa-bell text-gray-600 text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-emas text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-merah rounded-full flex items-center justify-center text-white font-bold">AD</div>
+                    <span class="font-semibold" id="userName">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Menu Updates Content -->
+        <main class="p-6">
+            <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-800">Daftar Update Menu</h2>
+                    <div class="flex space-x-3">
+                        <input type="text" placeholder="Cari update menu..." class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-merah">
+                        <select class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-merah">
+                            <option value="">Semua Status</option>
+                            <option value="pending">Menunggu</option>
+                            <option value="approved">Disetujui</option>
+                            <option value="rejected">Ditolak</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="py-3 px-4 text-left text-gray-600 font-semibold">ID</th>
+                                <th class="py-3 px-4 text-left text-gray-600 font-semibold">Judul Update</th>
+                                <th class="py-3 px-4 text-left text-gray-600 font-semibold">Deskripsi</th>
+                                <th class="py-3 px-4 text-left text-gray-600 font-semibold">Supplier</th>
+                                <th class="py-3 px-4 text-left text-gray-600 font-semibold">Tanggal</th>
+                                <th class="py-3 px-4 text-left text-gray-600 font-semibold">Status</th>
+                                <th class="py-3 px-4 text-left text-gray-600 font-semibold">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allMenuUpdatesTableBody">
+                            <!-- Menu updates will be loaded here dynamically -->
+                            <tr>
+                                <td colspan="7" class="py-8 px-4 text-center text-gray-500">
+                                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                                    <p>Memuat update menu dari Dapur...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="flex justify-between items-center mt-6">
+                    <div class="text-gray-600">
+                        Menampilkan 1-3 dari 3 data
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100">Sebelumnya</button>
+                        <button class="px-4 py-2 bg-merah text-white rounded-lg">1</button>
+                        <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100">Selanjutnya</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle mobile sidebar
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('overlay');
+
+            mobileSidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        // Close sidebar when clicking on overlay
+        document.getElementById('overlay').addEventListener('click', function() {
+            document.getElementById('mobileSidebar').classList.remove('active');
+            this.classList.remove('active');
+        });
+
+        // Logout functionality
+        // Tangani logout dari sidebar desktop
+        const logoutBtnDesktop = document.getElementById('logoutBtn');
+        if(logoutBtnDesktop) {
+            logoutBtnDesktop.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Konfirmasi logout
+                if (confirm('Apakah Anda yakin ingin logout?')) {
+                    // Hapus data pengguna dari sessionStorage
+                    sessionStorage.removeItem('currentUser');
+
+                    // Redirect ke halaman login
+                    window.location.href = '../auth/login.html';
+                }
+            });
+        }
+
+        // Tangani logout dari sidebar mobile
+        const logoutBtnMobile = document.getElementById('logoutBtnMobile');
+        if(logoutBtnMobile) {
+            logoutBtnMobile.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Konfirmasi logout
+                if (confirm('Apakah Anda yakin ingin logout?')) {
+                    // Hapus data pengguna dari sessionStorage
+                    sessionStorage.removeItem('currentUser');
+
+                    // Redirect ke halaman login
+                    window.location.href = '../auth/login.html';
+                }
+            });
+        }
+
+        // Cek apakah pengguna sudah login dan memiliki role admin
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = sessionStorage.getItem('currentUser');
+
+            if(!currentUser) {
+                // Jika tidak ada pengguna yang login, redirect ke halaman login
+                window.location.href = '../auth/login.html';
+                return;
+            }
+
+            const user = JSON.parse(currentUser);
+
+            if(user.role !== 'admin') {
+                // Jika pengguna bukan admin, redirect ke halaman sesuai role
+                switch(user.role) {
+                    case 'supplier':
+                        window.location.href = '../supplier/dashboard.html';
+                        break;
+                    case 'customer':
+                        window.location.href = '../customer/dashboard.html';
+                        break;
+                    default:
+                        window.location.href = '../auth/login.html';
+                        break;
+                }
+            }
+
+            // Tampilkan nama pengguna di header
+            const userNameElement = document.getElementById('userName');
+            if(user.nama_lengkap) {
+                userNameElement.textContent = user.nama_lengkap;
+            } else if(user.username) {
+                userNameElement.textContent = user.username;
+            }
+        });
+
+        // Load all menu updates from the backend
+        async function loadAllMenuUpdates() {
+            try {
+                // Since this is a static HTML file, we'll simulate the data
+                // In a real Laravel application, this would be an API call to fetch menu updates
+                const menuUpdatesData = [
+                    {
+                        id: 1,
+                        judul_update: "Menu Baru Minggu Ini",
+                        deskripsi_update: "Update menu minggu ini dengan berbagai sayuran segar dan protein berkualitas tinggi.",
+                        tanggal_update: "2026-02-10",
+                        status: "pending",
+                        supplier: { nama_lengkap: "Dapur Suplai" }
+                    },
+                    {
+                        id: 2,
+                        judul_update: "Promo Akhir Bulan",
+                        deskripsi_update: "Diskon spesial untuk produk-produk tertentu menjelang akhir bulan Februari.",
+                        tanggal_update: "2026-02-05",
+                        status: "approved",
+                        supplier: { nama_lengkap: "Dapur Suplai" }
+                    },
+                    {
+                        id: 3,
+                        judul_update: "Stok Produk Baru",
+                        deskripsi_update: "Penambahan stok produk baru termasuk buah-buahan musim dingin dan sayuran organik.",
+                        tanggal_update: "2026-01-28",
+                        status: "approved",
+                        supplier: { nama_lengkap: "Dapur Suplai" }
+                    }
+                ];
+
+                const tbody = document.getElementById('allMenuUpdatesTableBody');
+                tbody.innerHTML = ''; // Clear loading message
+
+                if (menuUpdatesData.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="py-8 px-4 text-center text-gray-500">
+                                <p>Tidak ada update menu dari Dapur saat ini.</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                menuUpdatesData.forEach(update => {
+                    const statusClass = update.status === 'approved' ? 'bg-green-100 text-green-800' : 
+                                      update.status === 'rejected' ? 'bg-red-100 text-red-800' : 
+                                      'bg-yellow-100 text-yellow-800';
+                    
+                    const statusText = update.status === 'approved' ? 'Disetujui' : 
+                                     update.status === 'rejected' ? 'Ditolak' : 
+                                     'Menunggu';
+                    
+                    const row = document.createElement('tr');
+                    row.className = 'border-b hover:bg-gray-50';
+                    row.innerHTML = `
+                        <td class="py-3 px-4">${update.id}</td>
+                        <td class="py-3 px-4 font-medium">${update.judul_update}</td>
+                        <td class="py-3 px-4 text-gray-700 max-w-xs">${update.deskripsi_update.substring(0, 50)}${update.deskripsi_update.length > 50 ? '...' : ''}</td>
+                        <td class="py-3 px-4">${update.supplier.nama_lengkap}</td>
+                        <td class="py-3 px-4">${new Date(update.tanggal_update).toLocaleDateString('id-ID')}</td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-1 rounded-full text-xs ${statusClass}">${statusText}</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <div class="flex space-x-2">
+                                ${update.status === 'pending' ? `
+                                    <button onclick="approveMenuUpdate(${update.id})" class="px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600">Setujui</button>
+                                    <button onclick="rejectMenuUpdate(${update.id})" class="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600">Tolak</button>
+                                ` : ''}
+                                <button onclick="viewMenuUpdateDetails(${update.id})" class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">Detail</button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading menu updates:', error);
+                const tbody = document.getElementById('allMenuUpdatesTableBody');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="py-8 px-4 text-center text-red-500">
+                            <p>Error memuat update menu: ${error.message}</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Function to approve a menu update (would make an API call in a real app)
+        function approveMenuUpdate(id) {
+            if (confirm('Apakah Anda yakin ingin menyetujui update menu ini?')) {
+                // In a real Laravel application, this would be an API call
+                console.log(`Approving menu update ID: ${id}`);
+                // Simulate API call success
+                alert('Update menu berhasil disetujui!');
+                loadAllMenuUpdates(); // Refresh the table
+            }
+        }
+
+        // Function to reject a menu update (would make an API call in a real app)
+        function rejectMenuUpdate(id) {
+            if (confirm('Apakah Anda yakin ingin menolak update menu ini?')) {
+                // In a real Laravel application, this would be an API call
+                console.log(`Rejecting menu update ID: ${id}`);
+                // Simulate API call success
+                alert('Update menu berhasil ditolak!');
+                loadAllMenuUpdates(); // Refresh the table
+            }
+        }
+
+        // Function to view menu update details (would make an API call in a real app)
+        function viewMenuUpdateDetails(id) {
+            // In a real Laravel application, this would navigate to a details page
+            console.log(`Viewing details for menu update ID: ${id}`);
+            alert(`Detail untuk update menu ID: ${id}\n\nFitur ini akan terhubung ke halaman detail dalam aplikasi Laravel.`);
+        }
+
+        // Load menu updates when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllMenuUpdates();
+        });
+    </script>
+</body>
+</html>

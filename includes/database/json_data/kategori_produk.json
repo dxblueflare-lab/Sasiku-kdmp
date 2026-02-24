@@ -1,0 +1,30 @@
+[
+    {
+        "nama_kategori": "Electronics",
+        "deskripsi": "Electronic devices and accessories",
+        "id": 1,
+        "created_at": "2026-02-13 06:31:37",
+        "updated_at": "2026-02-13 06:31:37"
+    },
+    {
+        "nama_kategori": "Clothing",
+        "deskripsi": "Apparel and fashion items",
+        "id": 2,
+        "created_at": "2026-02-13 06:31:37",
+        "updated_at": "2026-02-13 06:31:37"
+    },
+    {
+        "nama_kategori": "Home & Garden",
+        "deskripsi": "Home improvement and garden supplies",
+        "id": 3,
+        "created_at": "2026-02-13 06:31:37",
+        "updated_at": "2026-02-13 06:31:37"
+    },
+    {
+        "nama_kategori": "Books",
+        "deskripsi": "Educational and recreational books",
+        "id": 4,
+        "created_at": "2026-02-13 06:31:37",
+        "updated_at": "2026-02-13 06:31:37"
+    }
+]

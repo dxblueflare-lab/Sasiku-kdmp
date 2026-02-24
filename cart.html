@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja - Dapur Suplai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        merah: '#DC2626',
+                        putih: '#FFFFFF',
+                        emas: '#F59E0B',
+                        gelap: '#1F2937',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-hero {
+            background: linear-gradient(135deg, #DC2626 0%, #991B1B 50%, #7F1D1D 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(220, 38, 38, 0.15);
+        }
+        .status-pill {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-effect shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-merah to-red-800 rounded-full flex items-center justify-center shadow-lg">
+                         <img src="https://www.appdapursuplai.org/images/logo.png" alt="KDKMP" width="200" height="200">
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-normal text-merah tracking-tight">DAPUR SUPLAI</h1>
+                        <p class="text-xs text-gray-600 font-medium">Supporting Koperasi Desa & Kelurahan Merah Putih</p>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="../index.html" class="text-gray-700 hover:text-merah font-semibold transition">Beranda</a>
+                    <a href="shop.html" class="text-gray-700 hover:text-merah font-semibold transition">Belanja</a>
+                    <a href="#monitoring" class="text-gray-700 hover:text-merah font-semibold transition">Monitoring</a>
+                    <a href="cart.html" class="text-gray-700 hover:text-merah font-semibold transition">Keranjang</a>
+
+                    <div class="relative">
+                        <a href="auth/login.html" class="bg-emerald-500 text-white px-6 py-2 rounded-full hover:bg-emerald-600 transition shadow-lg flex items-center space-x-2">
+                            <i class="fas fa-user"></i>
+                            <span>Login</span>
+                        </a>
+                    </div>
+                </div>
+
+                <button class="md:hidden text-merah text-2xl" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cart Section -->
+    <section class="py-20 px-4 max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Keranjang Belanja</h1>
+            <p class="text-gray-600">Periksa dan kelola barang-barang dalam keranjang Anda</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div class="p-6 border-b">
+                        <h2 class="text-xl font-bold text-gray-800">Daftar Barang</h2>
+                    </div>
+                    
+                    <div class="divide-y">
+                        <div class="p-6 flex items-center">
+                            <div class="flex-shrink-0 w-24 h-24 bg-gray-200 rounded-lg overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1569718210204-2d644f66c0c2?w=100&h=100&fit=crop" 
+                                     alt="Beras Premium" 
+                                     class="w-full h-full object-cover">
+                            </div>
+                            
+                            <div class="ml-6 flex-grow">
+                                <h3 class="font-bold text-lg text-gray-800">Beras Premium</h3>
+                                <p class="text-gray-600 text-sm">Beras pulen berkualitas tinggi dari petani lokal</p>
+                                <p class="text-merah font-bold mt-1">Rp 15.000/kg</p>
+                            </div>
+                            
+                            <div class="flex items-center border rounded-lg">
+                                <button class="px-3 py-1 text-gray-600 hover:bg-gray-100">-</button>
+                                <input type="number" value="1" min="1" 
+                                       class="w-16 text-center border-y" readonly>
+                                <button class="px-3 py-1 text-gray-600 hover:bg-gray-100">+</button>
+                            </div>
+                            
+                            <div class="ml-6 text-right">
+                                <p class="font-bold text-gray-800">Rp 15.000</p>
+                                <a href="#" class="text-red-500 hover:text-red-700 text-sm mt-2 inline-block">Hapus</a>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6 flex items-center">
+                            <div class="flex-shrink-0 w-24 h-24 bg-gray-200 rounded-lg overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1545167622-3a6ac756afa4?w=100&h=100&fit=crop" 
+                                     alt="Sayur Mayur Segar" 
+                                     class="w-full h-full object-cover">
+                            </div>
+                            
+                            <div class="ml-6 flex-grow">
+                                <h3 class="font-bold text-lg text-gray-800">Sayur Mayur Segar</h3>
+                                <p class="text-gray-600 text-sm">Campuran sayuran organik harian</p>
+                                <p class="text-merah font-bold mt-1">Rp 25.000/paket</p>
+                            </div>
+                            
+                            <div class="flex items-center border rounded-lg">
+                                <button class="px-3 py-1 text-gray-600 hover:bg-gray-100">-</button>
+                                <input type="number" value="2" min="1" 
+                                       class="w-16 text-center border-y" readonly>
+                                <button class="px-3 py-1 text-gray-600 hover:bg-gray-100">+</button>
+                            </div>
+                            
+                            <div class="ml-6 text-right">
+                                <p class="font-bold text-gray-800">Rp 50.000</p>
+                                <a href="#" class="text-red-500 hover:text-red-700 text-sm mt-2 inline-block">Hapus</a>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6 flex items-center">
+                            <div class="flex-shrink-0 w-24 h-24 bg-gray-200 rounded-lg overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1605993439219-9d0a34a9c3ab?w=100&h=100&fit=crop" 
+                                     alt="Telur Ayam Segar" 
+                                     class="w-full h-full object-cover">
+                            </div>
+                            
+                            <div class="ml-6 flex-grow">
+                                <h3 class="font-bold text-lg text-gray-800">Telur Ayam Segar</h3>
+                                <p class="text-gray-600 text-sm">Telur ayam kampung berkualitas</p>
+                                <p class="text-merah font-bold mt-1">Rp 2.500/pcs</p>
+                            </div>
+                            
+                            <div class="flex items-center border rounded-lg">
+                                <button class="px-3 py-1 text-gray-600 hover:bg-gray-100">-</button>
+                                <input type="number" value="10" min="1" 
+                                       class="w-16 text-center border-y" readonly>
+                                <button class="px-3 py-1 text-gray-600 hover:bg-gray-100">+</button>
+                            </div>
+                            
+                            <div class="ml-6 text-right">
+                                <p class="font-bold text-gray-800">Rp 25.000</p>
+                                <a href="#" class="text-red-500 hover:text-red-700 text-sm mt-2 inline-block">Hapus</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-24">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Ringkasan Belanja</h2>
+                    
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Subtotal</span>
+                            <span class="font-bold">Rp 90.000</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Biaya Pengiriman</span>
+                            <span class="font-bold">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Diskon</span>
+                            <span class="font-bold text-green-600">Rp 0</span>
+                        </div>
+                        <hr class="my-2">
+                        <div class="flex justify-between text-lg font-bold">
+                            <span>Total</span>
+                            <span class="text-merah">Rp 90.000</span>
+                        </div>
+                    </div>
+                    
+                    <a href="checkout.html" class="w-full bg-merah text-white py-3 rounded-xl font-bold hover:bg-red-700 transition shadow-lg flex items-center justify-center">
+                        <span>Lanjutkan ke Pembayaran</span>
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                    
+                    <a href="shop.html" class="w-full mt-4 text-center bg-gray-200 text-gray-800 py-3 rounded-xl font-bold hover:bg-gray-300 transition">
+                        Lanjut Belanja
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gelap text-white py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-emas rounded-full flex items-center justify-center">
+                            <i class="fas fa-store text-gelap"></i>
+                        </div>
+                        <h4 class="text-xl font-bold">DAPUR SUPLAI</h4>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        Platform digital koperasi desa/kota untuk pengadaan bahan pangan dapur SPPG MBg dengan sistem monitoring real-time dan pembayaran terintegrasi.
+                    </p>
+                </div>
+                
+                <div>
+                    <h5 class="font-bold text-lg mb-4">Tautan</h5>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="../index.html" class="hover:text-emas transition">Beranda</a></li>
+                        <li><a href="shop.html" class="hover:text-emas transition">Belanja</a></li>
+                        <li><a href="#monitoring" class="hover:text-emas transition">Monitoring</a></li>
+                        <li><a href="cart.html" class="hover:text-emas transition">Keranjang</a></li>
+                        <li><a href="auth/login.html" class="hover:text-emas transition">Login</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 class="font-bold text-lg mb-4">Kontak</h5>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Jl. Koperasi Desa No. 1</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-phone"></i>
+                            <span>+62 812 3456 7890</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-envelope"></i>
+                            <span>info@dapursppgmbg.co.id</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5 class="font-bold text-lg mb-4">Jam Operasional</h5>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>Senin - Jumat: 08:00 - 17:00</li>
+                        <li>Sabtu: 08:00 - 15:00</li>
+                        <li>Minggu: Libur</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+                <p>&copy; 2024 Dapur Suplai. Hak Cipta Dilindungi.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Fungsi untuk toggle menu mobile
+        function toggleMobileMenu() {
+            const mobileMenu = document.querySelector('.mobile-menu');
+            if (mobileMenu) {
+                mobileMenu.classList.toggle('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

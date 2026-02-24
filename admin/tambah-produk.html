@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Produk - Dapur Suplai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        merah: '#DC2626',
+                        putih: '#FFFFFF',
+                        emas: '#F59E0B',
+                        gelap: '#1F2937',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-hero {
+            background: linear-gradient(135deg, #DC2626 0%, #991B1B 50%, #7F1D1D 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(220, 38, 38, 0.15);
+        }
+        .status-pill {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+            z-index: 10;
+        }
+        .main-content {
+            margin-left: 250px;
+        }
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+        .mobile-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background: white;
+            z-index: 50;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-sidebar.active {
+            transform: translateX(0);
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 40;
+        }
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Mobile Overlay -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Mobile Sidebar -->
+    <div class="mobile-sidebar glass-effect" id="mobileSidebar">
+        <div class="p-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-16 h-16 bg-gradient-to-br from-merah to-red-800 rounded-full flex items-center justify-center">
+                     <img src="https://www.appdapursuplai.org/images/logo.png" alt="Logo" width="70" height="70">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-merah tracking-tight">DAPUR SUPLAI</h1>
+                    <p class="text-xs text-gray-600 font-medium">Admin Panel</p>
+                </div>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="flex items-center space-x-3 px-4 py-3 bg-merah text-white rounded-lg">
+                    <i class="fas fa-box"></i>
+                    <span>Produk</span>
+                </a>
+                <a href="orders.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pesanan</span>
+                </a>
+                <a href="users.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-users"></i>
+                    <span>Pengguna</span>
+                </a>
+                <a href="reports.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Laporan</span>
+                </a>
+                <a href="../auth/login.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Desktop Sidebar -->
+    <div class="sidebar glass-effect" id="desktopSidebar">
+        <div class="p-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-16 h-16 bg-gradient-to-br from-merah to-red-800 rounded-full flex items-center justify-center">
+                     <img src="https://www.appdapursuplai.org/images/logo.png" alt="Logo" width="70" height="70">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-merah tracking-tight">DAPUR SUPLAI</h1>
+                    <p class="text-xs text-gray-600 font-medium">Admin Panel</p>
+                </div>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="flex items-center space-x-3 px-4 py-3 bg-merah text-white rounded-lg">
+                    <i class="fas fa-box"></i>
+                    <span>Produk</span>
+                </a>
+                <a href="orders.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pesanan</span>
+                </a>
+                <a href="users.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-users"></i>
+                    <span>Pengguna</span>
+                </a>
+                <a href="reports.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Laporan</span>
+                </a>
+                <a href="../auth/login.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="glass-effect shadow-lg p-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <button id="menuToggle" class="md:hidden mr-4 text-merah text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Tambah Produk Baru</h1>
+                    <p class="text-gray-600">Tambahkan produk baru ke dalam sistem</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <i class="fas fa-bell text-gray-600 text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-emas text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-merah rounded-full flex items-center justify-center text-white font-bold">AD</div>
+                    <span class="font-semibold">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Add Product Content -->
+        <main class="p-6">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800">Tambah Produk Baru</h2>
+                <a href="products.html" class="bg-gray-200 text-gray-800 px-6 py-3 rounded-full font-bold hover:bg-gray-300 transition shadow-lg flex items-center space-x-2">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Kembali ke Daftar Produk</span>
+                </a>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <form id="addProductForm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="nama_produk">
+                                Nama Produk
+                            </label>
+                            <input type="text" id="nama_produk" name="nama_produk" 
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah focus:border-transparent" 
+                                   placeholder="Masukkan nama produk" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="harga">
+                                Harga (Rp)
+                            </label>
+                            <input type="number" id="harga" name="harga" 
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah focus:border-transparent" 
+                                   placeholder="0" min="0" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="stok">
+                                Stok
+                            </label>
+                            <input type="number" id="stok" name="stok" 
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah focus:border-transparent" 
+                                   placeholder="0" min="0" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="id_kategori">
+                                Kategori
+                            </label>
+                            <select id="id_kategori" name="id_kategori" 
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah focus:border-transparent" required>
+                                <option value="">Pilih Kategori</option>
+                                <option value="1">Sayur-Sayuran</option>
+                                <option value="2">Buah-Buahan</option>
+                                <option value="3">Sembako</option>
+                                <option value="4">Protein Hewani</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="id_supplier">
+                                Supplier
+                            </label>
+                            <select id="id_supplier" name="id_supplier" 
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah focus:border-transparent" required>
+                                <option value="">Pilih Supplier</option>
+                                <option value="1">CV. Sumber Rejeki</option>
+                                <option value="2">UD. Segar Tani</option>
+                                <option value="3">PT. Peternakan Sejahtera</option>
+                                <option value="4">CV. Minyak Jaya</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="gambar_produk">
+                                Gambar Produk
+                            </label>
+                            <input type="file" id="gambar_produk" name="gambar_produk" 
+                                   class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah focus:border-transparent" 
+                                   accept="image/*">
+                        </div>
+                        
+                        <div class="md:col-span-2">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="deskripsi">
+                                Deskripsi Produk
+                            </label>
+                            <textarea id="deskripsi" name="deskripsi" rows="4"
+                                      class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah focus:border-transparent" 
+                                      placeholder="Deskripsikan produk secara lengkap..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <button type="submit" class="w-full bg-merah text-white py-4 rounded-xl font-bold hover:bg-red-700 transition shadow-lg flex items-center justify-center space-x-2">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>Tambah Produk</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle mobile sidebar
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('overlay');
+            
+            mobileSidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+        
+        // Close sidebar when clicking on overlay
+        document.getElementById('overlay').addEventListener('click', function() {
+            document.getElementById('mobileSidebar').classList.remove('active');
+            this.classList.remove('active');
+        });
+        
+        // Form submission handler
+        document.getElementById('addProductForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const formData = new FormData(this);
+            const productName = document.getElementById('nama_produk').value;
+            const price = document.getElementById('harga').value;
+            const stock = document.getElementById('stok').value;
+            const category = document.getElementById('id_kategori').value;
+            const supplier = document.getElementById('id_supplier').value;
+            const description = document.getElementById('deskripsi').value;
+            
+            // Validation
+            if (!productName || !price || !stock || !category || !supplier) {
+                alert('Harap lengkapi semua field yang wajib diisi!');
+                return;
+            }
+            
+            if (parseInt(stock) < 0) {
+                alert('Stok tidak boleh negatif!');
+                return;
+            }
+            
+            if (parseFloat(price) < 0) {
+                alert('Harga tidak boleh negatif!');
+                return;
+            }
+            
+            // Simulate product addition
+            console.log('Menambahkan produk baru:', {
+                nama_produk: productName,
+                harga: price,
+                stok: stock,
+                id_kategori: category,
+                id_supplier: supplier,
+                deskripsi: description
+            });
+            
+            // Show success message
+            alert(`Produk "${productName}" berhasil ditambahkan!`);
+            
+            // Reset form
+            this.reset();
+            
+            // In a real application, you would send this data to the server
+            // Example:
+            /*
+            fetch('/api/products', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    alert('Produk berhasil ditambahkan!');
+                    window.location.href = 'products.html';
+                } else {
+                    alert('Gagal menambahkan produk: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menambahkan produk');
+            });
+            */
+        });
+        
+        // Cek apakah pengguna sudah login dan memiliki role admin
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = sessionStorage.getItem('currentUser');
+            
+            if (!currentUser) {
+                // Jika tidak ada pengguna yang login, redirect ke halaman login
+                window.location.href = '../auth/login.html';
+                return;
+            }
+            
+            const user = JSON.parse(currentUser);
+            
+            // Cek apakah role pengguna adalah admin
+            if (user.role !== 'admin') {
+                // Jika bukan admin, redirect ke dashboard sesuai role
+                switch(user.role) {
+                    case 'supplier':
+                        window.location.href = '../supplier/dashboard.html';
+                        break;
+                    case 'customer':
+                        window.location.href = '../customer/dashboard.html';
+                        break;
+                    default:
+                        window.location.href = '../auth/login.html';
+                        break;
+                }
+                return;
+            }
+            
+            // Tampilkan informasi pengguna di header
+            document.querySelector('.font-semibold').textContent = user.nama_lengkap || user.username;
+        });
+    </script>
+</body>
+</html>

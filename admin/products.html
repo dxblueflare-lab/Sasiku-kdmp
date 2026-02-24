@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Produk - Dapur Suplai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        merah: '#DC2626',
+                        putih: '#FFFFFF',
+                        emas: '#F59E0B',
+                        gelap: '#1F2937',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-hero {
+            background: linear-gradient(135deg, #DC2626 0%, #991B1B 50%, #7F1D1D 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(220, 38, 38, 0.15);
+        }
+        .status-pill {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+            z-index: 10;
+        }
+        .main-content {
+            margin-left: 250px;
+        }
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+        .mobile-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background: white;
+            z-index: 50;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-sidebar.active {
+            transform: translateX(0);
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 40;
+        }
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Mobile Overlay -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Mobile Sidebar -->
+    <div class="mobile-sidebar glass-effect" id="mobileSidebar">
+        <div class="p-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+                     <img src="https://www.appdapursuplai.org/images/logo.png" alt="Logo" width="70" height="70">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-merah tracking-tight">DAPUR SUPLAI</h1>
+                    <p class="text-xs text-gray-600 font-medium">Admin Panel</p>
+                </div>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="flex items-center space-x-3 px-4 py-3 bg-merah text-white rounded-lg">
+                    <i class="fas fa-box"></i>
+                    <span>Produk</span>
+                </a>
+                <a href="orders.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pesanan</span>
+                </a>
+                <a href="users.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-users"></i>
+                    <span>Pengguna</span>
+                </a>
+                <a href="reports.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Laporan</span>
+                </a>
+                <a href="../auth/login.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Desktop Sidebar -->
+    <div class="sidebar glass-effect" id="desktopSidebar">
+        <div class="p-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+                     <img src="https://www.appdapursuplai.org/images/logo.png" alt="Logo" width="70" height="70">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-merah tracking-tight">DAPUR SUPLAI</h1>
+                    <p class="text-xs text-gray-600 font-medium">Admin Panel</p>
+                </div>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="flex items-center space-x-3 px-4 py-3 bg-merah text-white rounded-lg">
+                    <i class="fas fa-box"></i>
+                    <span>Produk</span>
+                </a>
+                <a href="orders.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pesanan</span>
+                </a>
+                <a href="users.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-users"></i>
+                    <span>Pengguna</span>
+                </a>
+                <a href="reports.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Laporan</span>
+                </a>
+                <a href="../auth/login.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="glass-effect shadow-lg p-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <button id="menuToggle" class="md:hidden mr-4 text-merah text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Manajemen Produk</h1>
+                    <p class="text-gray-600">Kelola produk dalam sistem</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <i class="fas fa-bell text-gray-600 text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-emas text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-merah rounded-full flex items-center justify-center text-white font-bold">AD</div>
+                    <span class="font-semibold">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Products Content -->
+        <main class="p-6">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800">Daftar Produk</h2>
+                <a href="tambah-produk.html" class="bg-merah text-white px-6 py-3 rounded-full font-bold hover:bg-red-700 transition shadow-lg flex items-center space-x-2">
+                    <i class="fas fa-plus"></i>
+                    <span>Tambah Produk</span>
+                </a>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="search">Cari Produk</label>
+                        <input type="text" id="search" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah" placeholder="Nama produk...">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="category">Kategori</label>
+                        <select id="category" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah">
+                            <option value="">Semua Kategori</option>
+                            <option value="sayur">Sayur-Sayuran</option>
+                            <option value="buah">Buah-Buahan</option>
+                            <option value="sembako">Sembako</option>
+                            <option value="protein">Protein Hewani</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="status">Status</label>
+                        <select id="status" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah">
+                            <option value="">Semua Status</option>
+                            <option value="aktif">Aktif</option>
+                            <option value="tidak_aktif">Tidak Aktif</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button class="w-full bg-merah text-white px-4 py-2 rounded-lg font-bold hover:bg-red-700 transition">
+                            <i class="fas fa-search mr-2"></i>Cari
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Table -->
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gambar</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Produk</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stok</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supplier</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="products-table-body">
+                            <!-- Products will be loaded dynamically -->
+                            <tr>
+                                <td colspan="9" class="px-6 py-4 text-center text-gray-500">
+                                    Memuat data produk...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="bg-white px-6 py-4 border-t border-gray-200" id="pagination-container" style="display: none;">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm text-gray-700" id="pagination-info">
+                            <!-- Pagination info will be loaded dynamically -->
+                        </div>
+                        <div class="flex space-x-2" id="pagination-links">
+                            <!-- Pagination links will be loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle mobile sidebar
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('overlay');
+            
+            mobileSidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+        
+        // Close sidebar when clicking on overlay
+        document.getElementById('overlay').addEventListener('click', function() {
+            document.getElementById('mobileSidebar').classList.remove('active');
+            this.classList.remove('active');
+        });
+        
+        // Fungsi untuk navigasi ke halaman lain
+        document.querySelectorAll('a[href]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if(this.getAttribute('href').startsWith('http') || this.getAttribute('href').includes('mailto:')) {
+                    return; // Biarkan tautan eksternal berfungsi normal
+                }
+                
+                e.preventDefault();
+                
+                // Simulasikan navigasi
+                const targetPage = this.getAttribute('href');
+                window.location.href = targetPage;
+            });
+        });
+        
+        // Cek apakah pengguna sudah login dan memiliki role admin
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = sessionStorage.getItem('currentUser');
+            
+            if (!currentUser) {
+                // Jika tidak ada pengguna yang login, redirect ke halaman login
+                window.location.href = '../auth/login.html';
+                return;
+            }
+            
+            const user = JSON.parse(currentUser);
+            
+            // Cek apakah role pengguna adalah admin
+            if (user.role !== 'admin') {
+                // Jika bukan admin, redirect ke dashboard sesuai role
+                switch(user.role) {
+                    case 'supplier':
+                        window.location.href = '../supplier/dashboard.html';
+                        break;
+                    case 'customer':
+                        window.location.href = '../customer/dashboard.html';
+                        break;
+                    default:
+                        window.location.href = '../auth/login.html';
+                        break;
+                }
+                return;
+            }
+            
+            // Tampilkan informasi pengguna di header
+            document.querySelector('.font-semibold').textContent = user.nama_lengkap || user.username;
+        });
+
+        // Function to handle edit action
+        function editProduct(productId) {
+            // Redirect to edit page with product ID
+            window.location.href = `edit-produk.html?id=${productId}`;
+        }
+
+        // Function to handle delete action
+        function deleteProduct(productId) {
+            if (confirm('Apakah Anda yakin ingin menghapus produk ini? Tindakan ini tidak dapat dibatalkan.')) {
+                // In a real application, you would send a request to delete the product
+                // For now, we'll simulate the deletion
+                fetch('../api/delete_product.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `id=${productId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Produk berhasil dihapus');
+                        // Reload the page to reflect changes
+                        location.reload();
+                    } else {
+                        alert('Gagal menghapus produk: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat menghapus produk');
+                });
+            }
+        }
+
+        // Function to format currency
+        function formatCurrency(amount) {
+            return 'Rp ' + amount.toLocaleString('id-ID');
+        }
+
+        // Function to load products from API
+        async function loadProducts() {
+            try {
+                const response = await fetch('../api/get_products.php');
+                const data = await response.json();
+
+                if (data.success) {
+                    displayProducts(data.products);
+                } else {
+                    console.error('Error loading products:', data.message);
+                    document.getElementById('products-table-body').innerHTML = `
+                        <tr>
+                            <td colspan="9" class="px-6 py-4 text-center text-red-500">
+                                Gagal memuat data produk: ${data.message}
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('products-table-body').innerHTML = `
+                    <tr>
+                        <td colspan="9" class="px-6 py-4 text-center text-red-500">
+                            Terjadi kesalahan saat memuat data produk
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Function to display products in the table
+        function displayProducts(products) {
+            const tbody = document.getElementById('products-table-body');
+            
+            if (products.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="px-6 py-4 text-center text-gray-500">
+                            Tidak ada produk ditemukan
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let html = '';
+            products.forEach(product => {
+                const statusClass = product.status === 'aktif' || product.status === 'Aktif' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
+                const statusText = product.status === 'aktif' || product.status === 'Aktif' ? 'Aktif' : 'Tidak Aktif';
+                
+                html += `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${product.id_formatted}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
+                                ${product.gambar_produk ? 
+                                    `<img src="${product.gambar_produk}" alt="${product.nama_produk}" class="w-full h-full object-cover">` : 
+                                    `<i class="fas fa-image text-gray-400 text-2xl"></i>`
+                                }
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">${product.nama_produk}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.kategori}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">${formatCurrency(product.harga)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">${product.stok}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">${statusText}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <button class="text-blue-500 hover:text-blue-700 mr-3 edit-btn" data-product-id="${product.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700 delete-btn" data-product-id="${product.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+
+            // Add event listeners to the newly added buttons
+            addEventListenersToButtons();
+        }
+
+        // Function to add event listeners to buttons
+        function addEventListenersToButtons() {
+            // Add click event listeners to all edit buttons
+            const editButtons = document.querySelectorAll('.edit-btn');
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    editProduct(productId);
+                });
+            });
+
+            // Add click event listeners to all delete buttons
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    deleteProduct(productId);
+                });
+            });
+        }
+
+        // Add event listeners to edit and delete buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load products when page loads
+            loadProducts();
+        });
+    </script>
+</body>
+</html>

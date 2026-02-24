@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan - Dapur Suplai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        merah: '#DC2626',
+                        putih: '#FFFFFF',
+                        emas: '#F59E0B',
+                        gelap: '#1F2937',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-hero {
+            background: linear-gradient(135deg, #DC2626 0%, #991B1B 50%, #7F1D1D 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(220, 38, 38, 0.15);
+        }
+        .status-pill {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+            z-index: 10;
+        }
+        .main-content {
+            margin-left: 250px;
+        }
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+        .mobile-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background: white;
+            z-index: 50;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-sidebar.active {
+            transform: translateX(0);
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 40;
+        }
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Mobile Overlay -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Mobile Sidebar -->
+    <div class="mobile-sidebar glass-effect" id="mobileSidebar">
+        <div class="p-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                     <img src="https://www.appdapursuplai.org/images/logo.png" alt="Logo" width="50" height="50">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-merah tracking-tight">DAPUR SUPLAI</h1>
+                    <p class="text-xs text-gray-600 font-medium">Admin Panel</p>
+                </div>
+            </div>
+            
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-box"></i>
+                    <span>Produk</span>
+                </a>
+                <a href="orders.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pesanan</span>
+                </a>
+                <a href="users.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-users"></i>
+                    <span>Pengguna</span>
+                </a>
+                <a href="reports.html" class="flex items-center space-x-3 px-4 py-3 bg-merah text-white rounded-lg">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Laporan</span>
+                </a>
+                <a href="../auth/logout.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Desktop Sidebar -->
+    <div class="sidebar glass-effect" id="desktopSidebar">
+        <div class="p-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                     <img src="https://www.appdapursuplai.org/images/logo.png" alt="Logo" width="50" height="50">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-merah tracking-tight">DAPUR SUPLAI</h1>
+                    <p class="text-xs text-gray-600 font-medium">Admin Panel</p>
+                </div>
+            </div>
+            
+            <nav class="space-y-2">
+                <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-box"></i>
+                    <span>Produk</span>
+                </a>
+                <a href="orders.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pesanan</span>
+                </a>
+                <a href="users.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-users"></i>
+                    <span>Pengguna</span>
+                </a>
+                <a href="reports.html" class="flex items-center space-x-3 px-4 py-3 bg-merah text-white rounded-lg">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Laporan</span>
+                </a>
+                <a href="../auth/logout.html" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-merah rounded-lg">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="glass-effect shadow-lg p-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <button id="menuToggle" class="md:hidden mr-4 text-merah text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Laporan Sistem</h1>
+                    <p class="text-gray-600">Analisis dan laporan data e-commerce</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <i class="fas fa-bell text-gray-600 text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-emas text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-merah rounded-full flex items-center justify-center text-white font-bold">AD</div>
+                    <span class="font-semibold">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Reports Content -->
+        <main class="p-6">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800">Laporan dan Analitik</h2>
+                <div class="flex space-x-4">
+                    <button onclick="downloadExcel('orders')" class="bg-emas text-gray-900 px-6 py-3 rounded-full font-bold hover:bg-yellow-500 transition shadow-lg flex items-center space-x-2">
+                        <i class="fas fa-file-excel"></i>
+                        <span>Ekspor ke Excel</span>
+                    </button>
+                    <button class="bg-merah text-white px-6 py-3 rounded-full font-bold hover:bg-red-700 transition shadow-lg">
+                        <i class="fas fa-sync-alt mr-2"></i>Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Report Filters -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="report_type">Jenis Laporan</label>
+                        <select id="report_type" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah">
+                            <option value="orders">Laporan Pesanan</option>
+                            <option value="products">Laporan Produk</option>
+                            <option value="customers">Laporan Pelanggan</option>
+                            <option value="revenue">Laporan Pendapatan</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="date_from">Tanggal Awal</label>
+                        <input type="date" id="date_from" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah" value="2024-01-01">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="date_to">Tanggal Akhir</label>
+                        <input type="date" id="date_to" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-merah" value="2024-01-31">
+                    </div>
+                    <div class="flex items-end">
+                        <button class="w-full bg-merah text-white px-4 py-2 rounded-lg font-bold hover:bg-red-700 transition">
+                            <i class="fas fa-filter mr-2"></i>Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <!-- Sales Chart -->
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Statistik Penjualan</h3>
+                    <div class="h-80 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <p class="text-gray-500">Grafik penjualan akan ditampilkan di sini</p>
+                    </div>
+                </div>
+
+                <!-- Revenue Chart -->
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Grafik Pendapatan</h3>
+                    <div class="h-80 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <p class="text-gray-500">Grafik pendapatan akan ditampilkan di sini</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Tables -->
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="p-6 border-b">
+                    <h3 class="text-xl font-bold text-gray-800">Data Laporan</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pelanggan</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produk</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-001</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15 Jan 2024</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">John Doe</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Beras Premium</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">2 kg</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Rp 30.000</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Selesai</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <button class="text-blue-500 hover:text-blue-700 mr-3">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="text-red-500 hover:text-red-700" onclick="downloadExcel('single_order', 'ORD-001')">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-002</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">14 Jan 2024</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Jane Smith</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Sayur Mayur Segar</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">1 paket</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Rp 25.000</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Diproses</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <button class="text-blue-500 hover:text-blue-700 mr-3">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="text-red-500 hover:text-red-700" onclick="downloadExcel('single_order', 'ORD-002')">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-003</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12 Jan 2024</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Robert Johnson</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Telur Ayam Segar</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">10 pcs</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Rp 25.000</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Dikirim</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <button class="text-blue-500 hover:text-blue-700 mr-3">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="text-red-500 hover:text-red-700" onclick="downloadExcel('single_order', 'ORD-003')">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-004</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10 Jan 2024</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Emily Davis</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Minyak Goreng</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">2 botol</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Rp 36.000</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">Diterima</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <button class="text-blue-500 hover:text-blue-700 mr-3">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="text-red-500 hover:text-red-700" onclick="downloadExcel('single_order', 'ORD-004')">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#ORD-005</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">08 Jan 2024</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Michael Wilson</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Gula Pasir</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">1 kg</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">Rp 12.000</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Pending</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <button class="text-blue-500 hover:text-blue-700 mr-3">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="text-red-500 hover:text-red-700" onclick="downloadExcel('single_order', 'ORD-005')">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="bg-white px-6 py-4 border-t border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm text-gray-700">
+                            Menampilkan <span class="font-medium">1</span> sampai <span class="font-medium">5</span> dari <span class="font-medium">24</span> hasil
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 text-sm bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">
+                                Sebelumnya
+                            </button>
+                            <button class="px-4 py-2 text-sm bg-merah text-white rounded-lg">
+                                1
+                            </button>
+                            <button class="px-4 py-2 text-sm bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">
+                                2
+                            </button>
+                            <button class="px-4 py-2 text-sm bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">
+                                3
+                            </button>
+                            <button class="px-4 py-2 text-sm bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">
+                                Berikutnya
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle mobile sidebar
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            const overlay = document.getElementById('overlay');
+            
+            mobileSidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+        
+        // Close sidebar when clicking on overlay
+        document.getElementById('overlay').addEventListener('click', function() {
+            document.getElementById('mobileSidebar').classList.remove('active');
+            this.classList.remove('active');
+        });
+        
+        // Function to download Excel report
+        function downloadExcel(reportType, orderId = null) {
+            let params = `type=${reportType}`;
+            if (orderId) {
+                params += `&order_id=${orderId}`;
+            }
+            
+            // Tambahkan parameter tanggal jika tersedia
+            const dateFrom = document.getElementById('date_from').value;
+            const dateTo = document.getElementById('date_to').value;
+            if (dateFrom && dateTo) {
+                params += `&date_from=${dateFrom}&date_to=${dateTo}`;
+            }
+            
+            // Redirect ke file PHP yang akan menghasilkan file Excel
+            window.location.href = `../reports/generate_excel.php?${params}`;
+        }
+        
+        // Fungsi untuk filter laporan
+        function filterReports() {
+            const reportType = document.getElementById('report_type').value;
+            const dateFrom = document.getElementById('date_from').value;
+            const dateTo = document.getElementById('date_to').value;
+            
+            console.log(`Filter laporan: ${reportType} dari ${dateFrom} hingga ${dateTo}`);
+            // Diimplementasikan lebih lanjut saat sistem laporan dibuat
+        }
+        
+        // Event listener untuk tombol filter
+        document.querySelector('button.bg-merah[type="button"]').addEventListener('click', filterReports);
+        
+        // Cek apakah pengguna sudah login dan memiliki role admin
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = sessionStorage.getItem('currentUser');
+            
+            if (!currentUser) {
+                // Jika tidak ada pengguna yang login, redirect ke halaman login
+                window.location.href = '../auth/login.html';
+                return;
+            }
+            
+            const user = JSON.parse(currentUser);
+            
+            // Cek apakah role pengguna adalah admin
+            if (user.role !== 'admin') {
+                // Jika bukan admin, redirect ke dashboard sesuai role
+                switch(user.role) {
+                    case 'supplier':
+                        window.location.href = '../supplier/dashboard.html';
+                        break;
+                    case 'customer':
+                        window.location.href = '../customer/dashboard.html';
+                        break;
+                    default:
+                        window.location.href = '../auth/login.html';
+                        break;
+                }
+                return;
+            }
+            
+            // Tampilkan informasi pengguna di header
+            document.querySelector('.font-semibold').textContent = user.nama_lengkap || user.username;
+        });
+    </script>
+</body>
+</html>
